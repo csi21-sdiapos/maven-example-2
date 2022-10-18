@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- https://javabydeveloper.com/what-is-dialect-in-hibernate-and-list-of-dialects/ -->
+
+<hibernate-configuration>
+	<session-factory>
+	    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+	
+		<property name="hibernate.connection.driver_class" value="org.postgresql.Driver" />
+		<property name="connection.url" value="jdbc:postgresql://localhost/postgres" />
+		<property name="connection.username" value="postgres" />
+		<property name="connection.password" value="12345" />
+		<property name="dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+		
+		<property name="hibernate.show_sql" value="true" />
+		<property name="hibernate.format_sql" value="true" />
+		
+		<property name="hibernate.hbm2ddl.auto" value="create" />
+		
+		<mapping class="Models.DTOs.AsignaturaDTO" />
+	</session-factory>
+</hibernate-configuration>
