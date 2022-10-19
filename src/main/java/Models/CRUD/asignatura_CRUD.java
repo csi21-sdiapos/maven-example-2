@@ -27,12 +27,12 @@ public class asignatura_CRUD {
             et = em.getTransaction();
             et.begin();
  
-            // Create and set values for new customer
+            // Create and set values for new student
             AsignaturaDTO asignatura = new AsignaturaDTO();
             // asignatura.setAsignatura_id(id);
             asignatura.setAsignatura_nombre(nombre);
  
-            // Save the customer object
+            // Save the student object
             em.persist(asignatura);
             et.commit();
             
@@ -63,7 +63,7 @@ public class asignatura_CRUD {
     	
     	AsignaturaDTO asignatura = null;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		asignatura = tq.getSingleResult();
     		System.out.println(asignatura.getAsignatura_id() + " " + asignatura.getAsignatura_nombre());
     	}
@@ -88,7 +88,7 @@ public class asignatura_CRUD {
     	
     	AsignaturaDTO asignatura = null;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		asignatura = tq.getSingleResult();
     		//System.out.println(asignatura.getAsignatura_id() + " " + asignatura.getAsignatura_nombre());
     		return asignatura;
@@ -113,7 +113,7 @@ public class asignatura_CRUD {
     	TypedQuery<AsignaturaDTO> tq = em.createQuery(strQuery, AsignaturaDTO.class);
     	List<AsignaturaDTO> listaAsignaturas;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		listaAsignaturas = tq.getResultList();
     		
     		for(AsignaturaDTO asignatura : listaAsignaturas) {
@@ -139,11 +139,11 @@ public class asignatura_CRUD {
             et = em.getTransaction();
             et.begin();
  
-            // Find customer and make changes
+            // Find student and make changes
             asignatura = em.find(AsignaturaDTO.class, id);
             asignatura.setAsignatura_nombre(nombre);
  
-            // Save the customer object
+            // Save the student object
             em.persist(asignatura);
             et.commit();
             

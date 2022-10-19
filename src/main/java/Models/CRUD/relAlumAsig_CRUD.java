@@ -29,14 +29,14 @@ public class relAlumAsig_CRUD { ////////////// clase en revisión //////////////
             et = em.getTransaction();
             et.begin();
  
-            // Create and set values for new customer
+            // Create and set values for new student
             RelAlumAsigDTO relAlumAsig = new RelAlumAsigDTO();
             relAlumAsig.setAlumno(alumno);
             relAlumAsig.setAlumno_nombre(alumno.getAlumno_nombre());
             relAlumAsig.setAsignatura(asignatura);
             relAlumAsig.setAsignatura_nombre(asignatura.getAsignatura_nombre());
             
-            // Save the customer object
+            // Save the student object
             em.persist(relAlumAsig);
             et.commit();
             
@@ -67,7 +67,7 @@ public class relAlumAsig_CRUD { ////////////// clase en revisión //////////////
     	
     	RelAlumAsigDTO relAlumAsig = null;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		relAlumAsig = tq.getSingleResult();
             System.out.println(relAlumAsig.getRelAlumAsig_id() + " " + relAlumAsig.getAlumno().getAlumno_id() + " " + relAlumAsig.getAlumno().getAlumno_nombre() + " " + relAlumAsig.getAsignatura().getAsignatura_id() + " " + relAlumAsig.getAsignatura().getAsignatura_nombre());
     	}
@@ -92,7 +92,7 @@ public class relAlumAsig_CRUD { ////////////// clase en revisión //////////////
     	
     	RelAlumAsigDTO relAlumAsig = null;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		relAlumAsig = tq.getSingleResult();
     	}
     	catch(NoResultException ex) {
@@ -115,7 +115,7 @@ public class relAlumAsig_CRUD { ////////////// clase en revisión //////////////
     	TypedQuery<RelAlumAsigDTO> tq = em.createQuery(strQuery, RelAlumAsigDTO.class);
     	List<RelAlumAsigDTO> listaRelAlumAsigs;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		listaRelAlumAsigs = tq.getResultList();
     		
     		for(RelAlumAsigDTO relAlumAsig : listaRelAlumAsigs) {
@@ -141,11 +141,11 @@ public class relAlumAsig_CRUD { ////////////// clase en revisión //////////////
             et = em.getTransaction();
             et.begin();
  
-            // Find customer and make changes
+            // Find student and make changes
             relAlumAsig = em.find(RelAlumAsigDTO.class, relAlumAsig_id);
             relAlumAsig.setAlumno_nombre(alumno_nombre);
  
-            // Save the customer object
+            // Save the student object
             em.persist(relAlumAsig);
             et.commit();
             
@@ -174,11 +174,11 @@ public class relAlumAsig_CRUD { ////////////// clase en revisión //////////////
             et = em.getTransaction();
             et.begin();
  
-            // Find customer and make changes
+            // Find student and make changes
             relAlumAsig = em.find(RelAlumAsigDTO.class, relAlumAsig_id);
             relAlumAsig.setAsignatura_nombre(asignatura_nombre);
  
-            // Save the customer object
+            // Save the student object
             em.persist(relAlumAsig);
             et.commit();
             

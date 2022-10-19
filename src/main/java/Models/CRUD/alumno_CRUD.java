@@ -27,14 +27,14 @@ public class alumno_CRUD {
             et = em.getTransaction();
             et.begin();
  
-            // Create and set values for new customer
+            // Create and set values for new student
             AlumnoDTO alumno = new AlumnoDTO();
             // asignatura.setAsignatura_id(id);
             alumno.setAlumno_nombre(nombre);
             alumno.setAlumno_apellidos(apellidos);
             alumno.setAlumno_email(email);
             
-            // Save the customer object
+            // Save the student object
             em.persist(alumno);
             et.commit();
             
@@ -65,7 +65,7 @@ public class alumno_CRUD {
     	
     	AlumnoDTO alumno = null;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		alumno = tq.getSingleResult();
     		System.out.println(alumno.getAlumno_id() + " " + alumno.getAlumno_nombre() + " " + alumno.getAlumno_apellidos() + " " + alumno.getAlumno_email());
     	}
@@ -90,7 +90,7 @@ public class alumno_CRUD {
     	
     	AlumnoDTO alumno = null;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		alumno = tq.getSingleResult();
     		//System.out.println(alumno.getAlumno_id() + " " + alumno.getAlumno_nombre() + " " + alumno.getAlumno_apellidos() + " " + alumno.getAlumno_email());
     		return alumno;
@@ -115,7 +115,7 @@ public class alumno_CRUD {
     	TypedQuery<AlumnoDTO> tq = em.createQuery(strQuery, AlumnoDTO.class);
     	List<AlumnoDTO> listaAlumnos;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		listaAlumnos = tq.getResultList();
     		
     		for(AlumnoDTO alumno : listaAlumnos) {
@@ -141,11 +141,11 @@ public class alumno_CRUD {
             et = em.getTransaction();
             et.begin();
  
-            // Find customer and make changes
+            // Find student and make changes
             alumno = em.find(AlumnoDTO.class, id);
             alumno.setAlumno_nombre(nombre);
  
-            // Save the customer object
+            // Save the student object
             em.persist(alumno);
             et.commit();
             

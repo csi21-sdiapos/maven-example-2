@@ -28,13 +28,6 @@ Database driver, location, userid and pw
             <property name="javax.persistence.jdbc.user" value="postgres" />
             <!-- Password -->
             <property name="javax.persistence.jdbc.password" value="12345" />
-            
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="create" />
-            <property name="show_sql" value="true"/>
-            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
-            <property name="hibernate.format_sql" value="true"/>
-            <property name="hibernate.use_sql_comments" value="true"/>
         </properties>
     </persistence-unit>
     
@@ -54,13 +47,6 @@ Database driver, location, userid and pw
             <property name="javax.persistence.jdbc.user" value="postgres" />
             <!-- Password -->
             <property name="javax.persistence.jdbc.password" value="12345" />
-            
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="create" />
-            <property name="show_sql" value="true"/>
-            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
-            <property name="hibernate.format_sql" value="true"/>
-            <property name="hibernate.use_sql_comments" value="true"/>
         </properties>
     </persistence-unit>
     
@@ -80,13 +66,6 @@ Database driver, location, userid and pw
             <property name="javax.persistence.jdbc.user" value="postgres" />
             <!-- Password -->
             <property name="javax.persistence.jdbc.password" value="12345" />
-            
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="create" />
-            <property name="show_sql" value="true"/>
-            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
-            <property name="hibernate.format_sql" value="true"/>
-            <property name="hibernate.use_sql_comments" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>

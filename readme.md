@@ -1,5 +1,25 @@
 # Maven Example 2 - Hibernate JSP
 
+<!-- TOC -->
+
+- [0. Creación del proyecto y dependencias](#creaci%C3%B3n-del-proyecto-soluci%C3%B3n-primeros-errores-y-dependencias)
+- [1. Los modelos con JPA](#los-modelos-con-jpa)
+    - [1.1. *src/main/java --> Models.DTOs --> AlumnoDTO.java*](#srcmainjava----modelsdtos----alumnodtojava)
+    - [1.2. *src/main/java --> Models.DTOs --> AsignaturaDTO.java*](#srcmainjava----modelsdtos----asignaturadtojava)
+    - [1.3. *src/main/java --> Models.DTOs --> RelAlumAsigDTO.java*](#srcmainjava----modelsdtos----relalumasigdtojava)
+- [2. Configuraciones para la persistencia en la BBD](#configuraciones-para-la-persistencia-en-la-bbd)
+    - [2.1. *src/main/resources --> META-INF --> persistence.xml*](#srcmainresources----meta-inf----persistencexml)
+    - [2.2. *src/main/resources --> hibernate.cfg.xml*](#srcmainresources----hibernatecfgxml)
+- [3. CRUD](#crud)
+    - [3.1. *Models.CRUD --> alumno_CRUD*](#modelscrud----alumno_crud)
+    - [3.2. *Models.CRUD --> asignatura_CRUD*](#modelscrud----asignatura_crud)
+    - [3.3. *Models.CRUD --> relAlumAsig_CRUD*](#modelscrud----relalumasig_crud)
+- [4. *src/main/java --> Main --> Main.java*](#srcmainjava----main----mainjava)
+- [PROBLEMAS y ERRORES](#problemas-y-errores)
+- [Solución de primeros errores y dependencias](#soluci%C3%B3n-de-primeros-errores-y-dependencias)
+
+<!-- /TOC -->
+
 # 0. Creación del proyecto, solución primeros errores y dependencias
 
 ![](./img/1.png)
@@ -427,13 +447,6 @@ Database driver, location, userid and pw
             <property name="javax.persistence.jdbc.user" value="postgres" />
             <!-- Password -->
             <property name="javax.persistence.jdbc.password" value="12345" />
-            
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="create" />
-            <property name="show_sql" value="true"/>
-            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
-            <property name="hibernate.format_sql" value="true"/>
-            <property name="hibernate.use_sql_comments" value="true"/>
         </properties>
     </persistence-unit>
     
@@ -453,13 +466,6 @@ Database driver, location, userid and pw
             <property name="javax.persistence.jdbc.user" value="postgres" />
             <!-- Password -->
             <property name="javax.persistence.jdbc.password" value="12345" />
-            
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="create" />
-            <property name="show_sql" value="true"/>
-            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
-            <property name="hibernate.format_sql" value="true"/>
-            <property name="hibernate.use_sql_comments" value="true"/>
         </properties>
     </persistence-unit>
     
@@ -479,13 +485,6 @@ Database driver, location, userid and pw
             <property name="javax.persistence.jdbc.user" value="postgres" />
             <!-- Password -->
             <property name="javax.persistence.jdbc.password" value="12345" />
-            
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="create" />
-            <property name="show_sql" value="true"/>
-            <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
-            <property name="hibernate.format_sql" value="true"/>
-            <property name="hibernate.use_sql_comments" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>
@@ -520,6 +519,10 @@ Database driver, location, userid and pw
 
 # 3. CRUD
 
+Para hacer el CRUD con EntityManager me he visto el siguiente video:
+
+https://www.youtube.com/watch?v=rk2zcyzeK3U&ab_channel=DerekBanas
+
 ## 3.1. *Models.CRUD --> alumno_CRUD*
 
 ```java
@@ -552,14 +555,14 @@ public class alumno_CRUD {
             et = em.getTransaction();
             et.begin();
  
-            // Create and set values for new customer
+            // Create and set values for new student
             AlumnoDTO alumno = new AlumnoDTO();
             // asignatura.setAsignatura_id(id);
             alumno.setAlumno_nombre(nombre);
             alumno.setAlumno_apellidos(apellidos);
             alumno.setAlumno_email(email);
             
-            // Save the customer object
+            // Save the student object
             em.persist(alumno);
             et.commit();
             
@@ -590,7 +593,7 @@ public class alumno_CRUD {
     	
     	AlumnoDTO alumno = null;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		alumno = tq.getSingleResult();
     		System.out.println(alumno.getAlumno_id() + " " + alumno.getAlumno_nombre() + " " + alumno.getAlumno_apellidos() + " " + alumno.getAlumno_email());
     	}
@@ -615,7 +618,7 @@ public class alumno_CRUD {
     	
     	AlumnoDTO alumno = null;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		alumno = tq.getSingleResult();
     		//System.out.println(alumno.getAlumno_id() + " " + alumno.getAlumno_nombre() + " " + alumno.getAlumno_apellidos() + " " + alumno.getAlumno_email());
     		return alumno;
@@ -640,7 +643,7 @@ public class alumno_CRUD {
     	TypedQuery<AlumnoDTO> tq = em.createQuery(strQuery, AlumnoDTO.class);
     	List<AlumnoDTO> listaAlumnos;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		listaAlumnos = tq.getResultList();
     		
     		for(AlumnoDTO alumno : listaAlumnos) {
@@ -666,11 +669,11 @@ public class alumno_CRUD {
             et = em.getTransaction();
             et.begin();
  
-            // Find customer and make changes
+            // Find student and make changes
             alumno = em.find(AlumnoDTO.class, id);
             alumno.setAlumno_nombre(nombre);
  
-            // Save the customer object
+            // Save the student object
             em.persist(alumno);
             et.commit();
             
@@ -751,12 +754,12 @@ public class asignatura_CRUD {
             et = em.getTransaction();
             et.begin();
  
-            // Create and set values for new customer
+            // Create and set values for new student
             AsignaturaDTO asignatura = new AsignaturaDTO();
             // asignatura.setAsignatura_id(id);
             asignatura.setAsignatura_nombre(nombre);
  
-            // Save the customer object
+            // Save the student object
             em.persist(asignatura);
             et.commit();
             
@@ -787,7 +790,7 @@ public class asignatura_CRUD {
     	
     	AsignaturaDTO asignatura = null;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		asignatura = tq.getSingleResult();
     		System.out.println(asignatura.getAsignatura_id() + " " + asignatura.getAsignatura_nombre());
     	}
@@ -812,7 +815,7 @@ public class asignatura_CRUD {
     	
     	AsignaturaDTO asignatura = null;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		asignatura = tq.getSingleResult();
     		//System.out.println(asignatura.getAsignatura_id() + " " + asignatura.getAsignatura_nombre());
     		return asignatura;
@@ -837,7 +840,7 @@ public class asignatura_CRUD {
     	TypedQuery<AsignaturaDTO> tq = em.createQuery(strQuery, AsignaturaDTO.class);
     	List<AsignaturaDTO> listaAsignaturas;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		listaAsignaturas = tq.getResultList();
     		
     		for(AsignaturaDTO asignatura : listaAsignaturas) {
@@ -863,11 +866,11 @@ public class asignatura_CRUD {
             et = em.getTransaction();
             et.begin();
  
-            // Find customer and make changes
+            // Find student and make changes
             asignatura = em.find(AsignaturaDTO.class, id);
             asignatura.setAsignatura_nombre(nombre);
  
-            // Save the customer object
+            // Save the student object
             em.persist(asignatura);
             et.commit();
             
@@ -950,14 +953,14 @@ public class relAlumAsig_CRUD { ////////////// clase en revisión //////////////
             et = em.getTransaction();
             et.begin();
  
-            // Create and set values for new customer
+            // Create and set values for new student
             RelAlumAsigDTO relAlumAsig = new RelAlumAsigDTO();
             relAlumAsig.setAlumno(alumno);
             relAlumAsig.setAlumno_nombre(alumno.getAlumno_nombre());
             relAlumAsig.setAsignatura(asignatura);
             relAlumAsig.setAsignatura_nombre(asignatura.getAsignatura_nombre());
             
-            // Save the customer object
+            // Save the student object
             em.persist(relAlumAsig);
             et.commit();
             
@@ -988,7 +991,7 @@ public class relAlumAsig_CRUD { ////////////// clase en revisión //////////////
     	
     	RelAlumAsigDTO relAlumAsig = null;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		relAlumAsig = tq.getSingleResult();
             System.out.println(relAlumAsig.getRelAlumAsig_id() + " " + relAlumAsig.getAlumno().getAlumno_id() + " " + relAlumAsig.getAlumno().getAlumno_nombre() + " " + relAlumAsig.getAsignatura().getAsignatura_id() + " " + relAlumAsig.getAsignatura().getAsignatura_nombre());
     	}
@@ -1013,7 +1016,7 @@ public class relAlumAsig_CRUD { ////////////// clase en revisión //////////////
     	
     	RelAlumAsigDTO relAlumAsig = null;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		relAlumAsig = tq.getSingleResult();
     	}
     	catch(NoResultException ex) {
@@ -1036,7 +1039,7 @@ public class relAlumAsig_CRUD { ////////////// clase en revisión //////////////
     	TypedQuery<RelAlumAsigDTO> tq = em.createQuery(strQuery, RelAlumAsigDTO.class);
     	List<RelAlumAsigDTO> listaRelAlumAsigs;
     	try {
-    		// Get matching customer object and output
+    		// Get matching student object and output
     		listaRelAlumAsigs = tq.getResultList();
     		
     		for(RelAlumAsigDTO relAlumAsig : listaRelAlumAsigs) {
@@ -1062,11 +1065,11 @@ public class relAlumAsig_CRUD { ////////////// clase en revisión //////////////
             et = em.getTransaction();
             et.begin();
  
-            // Find customer and make changes
+            // Find student and make changes
             relAlumAsig = em.find(RelAlumAsigDTO.class, relAlumAsig_id);
             relAlumAsig.setAlumno_nombre(alumno_nombre);
  
-            // Save the customer object
+            // Save the student object
             em.persist(relAlumAsig);
             et.commit();
             
@@ -1095,11 +1098,11 @@ public class relAlumAsig_CRUD { ////////////// clase en revisión //////////////
             et = em.getTransaction();
             et.begin();
  
-            // Find customer and make changes
+            // Find student and make changes
             relAlumAsig = em.find(RelAlumAsigDTO.class, relAlumAsig_id);
             relAlumAsig.setAsignatura_nombre(asignatura_nombre);
  
-            // Save the customer object
+            // Save the student object
             em.persist(relAlumAsig);
             et.commit();
             
@@ -1268,7 +1271,7 @@ public class Main {
 
 # PROBLEMAS y ERRORES
 
-Para crear la tabla y un objeto relacional he visto el siguiente video:
+Para crear la tabla de unión y crear un objeto relacional he visto el siguiente video:
 
 https://www.youtube.com/watch?v=_vhskxEihz4&ab_channel=CodeJava
 
