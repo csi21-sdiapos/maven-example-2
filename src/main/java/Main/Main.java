@@ -2,6 +2,7 @@ package Main;
 
 import java.util.Scanner;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -9,6 +10,9 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 import Models.CRUD.alumno_CRUD;
 import Models.CRUD.asignatura_CRUD;
+import Models.DTOs.AlumnoDTO;
+import Models.DTOs.AsignaturaDTO;
+import Models.DTOs.RelAlumAsigDTO;
 
 public class Main {
 	
@@ -70,10 +74,39 @@ public class Main {
 		
 		System.out.println("\n");
 		
-		/**************************** Recogemos el alumno1 y la asignatura2 y creamos un nuevo objeto **************/
+		/********* vamos a crear un tercer alumno y una tercera asignatura y creamos un nuevo objeto relacional con ellos **************/
 
+		Session session = factory.openSession();
 		
+		System.out.print("\nIntroduzca el nombre del alumno 3:\t");
+        nombre = sc.nextLine();
+        System.out.print("\nIntroduzca los apellidos del alumno 3:\t");
+        apellidos = sc.nextLine();
+        System.out.print("\nIntroduzca el email del alumno 3:\t");
+        email = sc.nextLine();
 		
+		AlumnoDTO alumno = new AlumnoDTO();
+		alumno.setAlumno_nombre(nombre);
+        alumno.setAlumno_apellidos(nombre);
+        alumno.setAlumno_email(email);
+		
+        System.out.print("\nIntroduzca el nombre de la asignatura 3:\t");
+        nombre = sc.nextLine();
+        
+		AsignaturaDTO asignatura = new AsignaturaDTO();
+		asignatura.setAsignatura_nombre(nombre);
+		
+		RelAlumAsigDTO relAlumAsig = new RelAlumAsigDTO();
+		relAlumAsig.setAlumno(alumno);
+		relAlumAsig.setAsignatura(asignatura);
+		relAlumAsig.setAlumno_nombre(alumno.getAlumno_nombre());
+		relAlumAsig.setAsignatura_nombre(asignatura.getAsignatura_nombre());
+		
+		asignatura.addRelAlumAsig(relAlumAsig);
+		
+		session.save(asignatura);
+		session.close();
+
 		/***********************************************************************************************************************/
 		factory.close(); // hay que cerrar el factory con el que se autocrean las tablas en la BBDD
 	}

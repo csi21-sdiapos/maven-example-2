@@ -2,11 +2,14 @@ package Models.DTOs;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 //Entity defines which objects should be persisted in the database
@@ -22,26 +25,31 @@ public class RelAlumAsigDTO implements Serializable {
 	@Column(name = "relAlumAsig_id", unique = true)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	int relAlumAsig_id;
-	@Column(name = "alumno_id")
-	int alumno_id;
+	
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "alumno_id")
+	AlumnoDTO alumno;
+	
+	@ManyToOne
+	@JoinColumn(name = "asignatura_id")
+	AsignaturaDTO asignatura;
+	
 	@Column(name = "alumno_nombre", length = 100, nullable = true)
 	String alumno_nombre;
-	@Column(name = "asignatura_id")
-	int asignatura_id;
 	@Column(name = "asignatura_nombre", length = 100, nullable = true)
 	String asignatura_nombre;
 	
 	/*************************************** CONSTRUCTORES *******************************************/
 	
 	// constructor lleno
-	public RelAlumAsigDTO(int relAlumAsig_id, int alumno_id, String alumno_nombre, int asignatura_id, String asignatura_nombre) {
-		super();
-		this.relAlumAsig_id = relAlumAsig_id;
-		this.alumno_id = alumno_id;
-		this.alumno_nombre = alumno_nombre;
-		this.asignatura_id = asignatura_id;
-		this.asignatura_nombre = asignatura_nombre;
-	}
+	public RelAlumAsigDTO(int relAlumAsig_id, AlumnoDTO alumno, String alumno_nombre, AsignaturaDTO asignatura, String asignatura_nombre) {
+        super();
+        this.relAlumAsig_id = relAlumAsig_id;
+        this.alumno = alumno;
+        this.alumno_nombre = alumno_nombre;
+        this.asignatura = asignatura;
+        this.asignatura_nombre = asignatura_nombre;
+    }
 
 	// constructor vacío
 	public RelAlumAsigDTO() {
@@ -51,62 +59,60 @@ public class RelAlumAsigDTO implements Serializable {
 	
 	/****************************************** GETTERS Y SETTERS ***************************************/
 	public int getRelAlumAsig_id() {
-		return relAlumAsig_id;
-	}
+        return relAlumAsig_id;
+    }
 
-	public void setRelAlumAsig_id(int relAlumAsig_id) {
-		this.relAlumAsig_id = relAlumAsig_id;
-	}
+    public void setRelAlumAsig_id(int relAlumAsig_id) {
+        this.relAlumAsig_id = relAlumAsig_id;
+    }
 
-	public int getAlumno_id() {
-		return alumno_id;
-	}
+    public AlumnoDTO getAlumno() {
+        return alumno;
+    }
 
-	public void setAlumno_id(int alumno_id) {
-		this.alumno_id = alumno_id;
-	}
+    public void setAlumno(AlumnoDTO alumno) {
+        this.alumno = alumno;
+    }
 
-	public String getAlumno_nombre() {
-		return alumno_nombre;
-	}
+    public String getAlumno_nombre() {
+        return alumno_nombre;
+    }
 
-	public void setAlumno_nombre(String alumno_nombre) {
-		this.alumno_nombre = alumno_nombre;
-	}
+    public void setAlumno_nombre(String alumno_nombre) {
+        this.alumno_nombre = alumno_nombre;
+    }
 
-	public int getAsignatura_id() {
-		return asignatura_id;
-	}
+    public AsignaturaDTO getAsignatura() {
+        return asignatura;
+    }
 
-	public void setAsignatura_id(int asignatura_id) {
-		this.asignatura_id = asignatura_id;
-	}
+    public void setAsignatura(AsignaturaDTO asignatura) {
+        this.asignatura = asignatura;
+    }
 
-	public String getAsignatura_nombre() {
-		return asignatura_nombre;
-	}
+    public String getAsignatura_nombre() {
+        return asignatura_nombre;
+    }
 
-	public void setAsignatura_nombre(String asignatura_nombre) {
-		this.asignatura_nombre = asignatura_nombre;
-	}
+    public void setAsignatura_nombre(String asignatura_nombre) {
+        this.asignatura_nombre = asignatura_nombre;
+    }
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-	
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+    
 	
 	/***************************************** MÉTODOS ***********************************/
-	
-	
-	/*************************************** ToString ***************************************/
+
+
+    /*************************************** ToString ***************************************/
 	@Override
 	public String toString() {
 	    return 
-	    	"\t" + relAlumAsig_id +
-	    	"\t" + alumno_id + 
-	    	"\t" + alumno_nombre +
-	    	"\t" + asignatura_id +
-	    	"\t" + asignatura_nombre;
+	    	"\t" + relAlumAsig_id;
 	}
+
+    
 	
 }

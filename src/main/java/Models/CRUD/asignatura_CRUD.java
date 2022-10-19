@@ -91,6 +91,7 @@ public class asignatura_CRUD {
     		// Get matching customer object and output
     		asignatura = tq.getSingleResult();
     		//System.out.println(asignatura.getAsignatura_id() + " " + asignatura.getAsignatura_nombre());
+    		return asignatura;
     	}
     	catch(NoResultException ex) {
     		ex.printStackTrace();

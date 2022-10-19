@@ -16,7 +16,7 @@ public class alumno_CRUD {
 	// Create an EntityManagerFactory when you start the application
     private static final EntityManagerFactory ENTITY_MANAGER_ALUMNO = Persistence.createEntityManagerFactory("ALUMNO_PERSISTENCE");
 
-	public static void addAlumno(String nombre, String apellidos, String email) { // he quitado el parámetro de entrada del id porque como es un sequence se debe poner sólo
+    public static void addAlumno(String nombre, String apellidos, String email) { // he quitado el parámetro de entrada del id porque como es un sequence se debe poner sólo
         // The EntityManager class allows operations such as create, read, update, delete
         EntityManager em = ENTITY_MANAGER_ALUMNO.createEntityManager();
         // Used to issue transactions on the EntityManager
@@ -29,11 +29,11 @@ public class alumno_CRUD {
  
             // Create and set values for new customer
             AlumnoDTO alumno = new AlumnoDTO();
-            // alumno.setAlumno_id(id);
+            // asignatura.setAsignatura_id(id);
             alumno.setAlumno_nombre(nombre);
             alumno.setAlumno_apellidos(apellidos);
             alumno.setAlumno_email(email);
- 
+            
             // Save the customer object
             em.persist(alumno);
             et.commit();
@@ -93,6 +93,7 @@ public class alumno_CRUD {
     		// Get matching customer object and output
     		alumno = tq.getSingleResult();
     		//System.out.println(alumno.getAlumno_id() + " " + alumno.getAlumno_nombre() + " " + alumno.getAlumno_apellidos() + " " + alumno.getAlumno_email());
+    		return alumno;
     	}
     	catch(NoResultException ex) {
     		ex.printStackTrace();

@@ -9,6 +9,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
+import Models.DTOs.AlumnoDTO;
+import Models.DTOs.AsignaturaDTO;
 import Models.DTOs.RelAlumAsigDTO;
 
 public class relAlumAsig_CRUD { ////////////// clase en revisión ////////////////
@@ -16,7 +18,7 @@ public class relAlumAsig_CRUD { ////////////// clase en revisión //////////////
 	// Create an EntityManagerFactory when you start the application
     private static final EntityManagerFactory ENTITY_MANAGER_REL_ALUM_ASIG = Persistence.createEntityManagerFactory("REL_ALUM_ASIG_PERSISTENCE");
 
-	public static void addRelAlumAsig(int alumno_id, String alumno_nombre, int asignatura_id, String asignatura_nombre) { // he quitado el parámetro de entrada del id porque como es un sequence se debe poner sólo
+	public static void addRelAlumAsig(AlumnoDTO alumno, AsignaturaDTO asignatura) { // he quitado el parámetro de entrada del id porque como es un sequence se debe poner sólo
         // The EntityManager class allows operations such as create, read, update, delete
         EntityManager em = ENTITY_MANAGER_REL_ALUM_ASIG.createEntityManager();
         // Used to issue transactions on the EntityManager
@@ -29,11 +31,11 @@ public class relAlumAsig_CRUD { ////////////// clase en revisión //////////////
  
             // Create and set values for new customer
             RelAlumAsigDTO relAlumAsig = new RelAlumAsigDTO();
-            relAlumAsig.setAlumno_id(alumno_id);
-            relAlumAsig.setAlumno_nombre(alumno_nombre);
-            relAlumAsig.setAsignatura_id(asignatura_id);
-            relAlumAsig.setAsignatura_nombre(asignatura_nombre);
- 
+            relAlumAsig.setAlumno(alumno);
+            relAlumAsig.setAlumno_nombre(alumno.getAlumno_nombre());
+            relAlumAsig.setAsignatura(asignatura);
+            relAlumAsig.setAsignatura_nombre(asignatura.getAsignatura_nombre());
+            
             // Save the customer object
             em.persist(relAlumAsig);
             et.commit();
@@ -67,7 +69,7 @@ public class relAlumAsig_CRUD { ////////////// clase en revisión //////////////
     	try {
     		// Get matching customer object and output
     		relAlumAsig = tq.getSingleResult();
-    		System.out.println(relAlumAsig.getRelAlumAsig_id() + " " + relAlumAsig.getAlumno_id() + " " + relAlumAsig.getAlumno_nombre() + " " + relAlumAsig.getAsignatura_id() + " " + relAlumAsig.getAsignatura_nombre());
+            System.out.println(relAlumAsig.getRelAlumAsig_id() + " " + relAlumAsig.getAlumno().getAlumno_id() + " " + relAlumAsig.getAlumno().getAlumno_nombre() + " " + relAlumAsig.getAsignatura().getAsignatura_id() + " " + relAlumAsig.getAsignatura().getAsignatura_nombre());
     	}
     	catch(NoResultException ex) {
     		ex.printStackTrace();
@@ -117,7 +119,7 @@ public class relAlumAsig_CRUD { ////////////// clase en revisión //////////////
     		listaRelAlumAsigs = tq.getResultList();
     		
     		for(RelAlumAsigDTO relAlumAsig : listaRelAlumAsigs) {
-    			System.out.println(relAlumAsig.getRelAlumAsig_id() + " " + relAlumAsig.getAlumno_id() + " " + relAlumAsig.getAlumno_nombre() + " " + relAlumAsig.getAsignatura_id() + " " + relAlumAsig.getAsignatura_nombre());
+    			System.out.println(relAlumAsig.getRelAlumAsig_id() + " " + relAlumAsig.getAlumno().getAlumno_id() + " " + relAlumAsig.getAlumno().getAlumno_nombre() + " " + relAlumAsig.getAsignatura().getAsignatura_id() + " " + relAlumAsig.getAsignatura().getAsignatura_nombre());
             }
     	}
     	catch(NoResultException ex) {

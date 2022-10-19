@@ -7,13 +7,12 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+//import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 
 //Entity defines which objects should be persisted in the database
 @Entity
@@ -39,22 +38,8 @@ public class AsignaturaDTO implements Serializable {
 	@Column(name = "asignatura_nombre", length = 100, nullable = true)
 	String asignatura_nombre;
 	
-	//////////////////////////// para hacer la relación necesitamos esto //////////////////////////
-	@ManyToMany(
-		fetch = FetchType.LAZY,	
-		cascade = {
-			CascadeType.PERSIST,
-		    CascadeType.MERGE
-		},
-		mappedBy = "asignaturas"
-	)
-	private Set<AlumnoDTO> alumnos = new HashSet<AlumnoDTO>();
-
-	public Set<AlumnoDTO> getAlumnos() {
-		return alumnos;
-	}
-	/////////////////////////////////////////////////////////////////////////////////////////////
-
+	@OneToMany(mappedBy = "asignatura", cascade = CascadeType.ALL)
+    Set<RelAlumAsigDTO> listaRelAlumAsig = new HashSet<>();
 
 	/******************************* CONSTRUCTORES ***********************************/
 	
@@ -88,6 +73,9 @@ public class AsignaturaDTO implements Serializable {
 		
 	/*************************************** MÉTODOS *****************************************/
 	
+	public void addRelAlumAsig(RelAlumAsigDTO relAlumAsig) {
+        this.listaRelAlumAsig.add(relAlumAsig);
+    }
 		
 	/*************************************** ToString ***************************************/
 	@Override

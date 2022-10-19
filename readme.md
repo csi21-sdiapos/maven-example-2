@@ -4,30 +4,6 @@
 
 ![](./img/1.png)
 
-![](./img/2.png)
-
-![](./img/3.png)
-
-![](./img/4.png)
-
-![](./img/5.png)
-
-![](./img/6.png)
-
-![](./img/7.png)
-
-![](./img/8.png)
-
-![](./img/9.png)
-
-![](./img/10.png)
-
-![](./img/11.png)
-
-![](./img/12.png)
-
-![](./img/13.png)
-
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -102,15 +78,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+//import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+//import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 //Entity defines which objects should be persisted in the database
@@ -141,24 +116,11 @@ public class AlumnoDTO implements Serializable {
 	@Column(name = "alumno_email", length = 100, nullable = true)
 	String alumno_email;
 	
-	//////////////////////////// para hacer la relación necesitamos esto //////////////////////////
-	@ManyToMany(
-		fetch = FetchType.LAZY,	
-		cascade = {
-	        CascadeType.PERSIST,
-	        CascadeType.MERGE
-	    })
-    @JoinTable(name = "relAlumAsig", 
-            joinColumns = { @JoinColumn(name = "alumno_id", nullable = false, updatable = false) }, 
-            inverseJoinColumns = { @JoinColumn(name = "asignatura_id", nullable = false, updatable = false) })
-    private Set<AsignaturaDTO> asignaturas = new HashSet<AsignaturaDTO>();
-
-	public Set<AsignaturaDTO> getAsignaturas() {
-		return asignaturas;
-	}
-	/////////////////////////////////////////////////////////////////////////////////////////////
-
-	/******************************* CONSTRUCTORES ***********************************/
+	@OneToMany(mappedBy = "alumno", cascade = CascadeType.ALL)
+	Set<RelAlumAsigDTO> listaRelAlumAsig = new HashSet<>();
+	
+	
+    /******************************* CONSTRUCTORES ***********************************/
 	
 	// constructor lleno
 	public AlumnoDTO(int alumno_id, String alumno_nombre, String alumno_apellidos, String alumno_email) {
@@ -204,19 +166,7 @@ public class AlumnoDTO implements Serializable {
 		
 	/*************************************** MÉTODOS *****************************************/
 		
-	public void addAsignatura(AsignaturaDTO asignatura) { // para hacer la relación
-        this.asignaturas.add(asignatura);
-        asignatura.getAlumnos().add(this);
-    }
- 
-	public void removeAsignatura(int asignatura_id) { // para hacer la relación
-	    AsignaturaDTO asignatura = this.asignaturas.stream().filter(a -> a.getAsignatura_id() == asignatura_id).findFirst().orElse(null);
-	    if (asignatura != null) {
-	      this.asignaturas.remove(asignatura);
-	      asignatura.getAlumnos().remove(this);
-	    }
-	  }
-		
+	
 	/*************************************** ToString ***************************************/
 	@Override
 	public String toString() {
@@ -241,13 +191,12 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+//import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 
 //Entity defines which objects should be persisted in the database
 @Entity
@@ -273,22 +222,8 @@ public class AsignaturaDTO implements Serializable {
 	@Column(name = "asignatura_nombre", length = 100, nullable = true)
 	String asignatura_nombre;
 	
-	//////////////////////////// para hacer la relación necesitamos esto //////////////////////////
-	@ManyToMany(
-		fetch = FetchType.LAZY,	
-		cascade = {
-			CascadeType.PERSIST,
-		    CascadeType.MERGE
-		},
-		mappedBy = "asignaturas"
-	)
-	private Set<AlumnoDTO> alumnos = new HashSet<AlumnoDTO>();
-
-	public Set<AlumnoDTO> getAlumnos() {
-		return alumnos;
-	}
-	/////////////////////////////////////////////////////////////////////////////////////////////
-
+	@OneToMany(mappedBy = "asignatura", cascade = CascadeType.ALL)
+    Set<RelAlumAsigDTO> listaRelAlumAsig = new HashSet<>();
 
 	/******************************* CONSTRUCTORES ***********************************/
 	
@@ -322,6 +257,9 @@ public class AsignaturaDTO implements Serializable {
 		
 	/*************************************** MÉTODOS *****************************************/
 	
+	public void addRelAlumAsig(RelAlumAsigDTO relAlumAsig) {
+        this.listaRelAlumAsig.add(relAlumAsig);
+    }
 		
 	/*************************************** ToString ***************************************/
 	@Override
@@ -330,6 +268,127 @@ public class AsignaturaDTO implements Serializable {
 	    	"\t" + asignatura_id + 
 	    	"\t" + asignatura_nombre;
 	}
+}
+```
+
+## 1.3. *src/main/java --> Models.DTOs --> RelAlumAsigDTO.java*
+
+```java
+package Models.DTOs;
+
+import java.io.Serializable;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+//Entity defines which objects should be persisted in the database
+@Entity
+//Defines the name of the table created for the entity
+@Table(name = "relAlumAsig")
+public class RelAlumAsigDTO implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
+	/************************************ ATRIBUTOS *************************************/
+	@Id
+	@Column(name = "relAlumAsig_id", unique = true)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	int relAlumAsig_id;
+	
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "alumno_id")
+	AlumnoDTO alumno;
+	
+	@ManyToOne
+	@JoinColumn(name = "asignatura_id")
+	AsignaturaDTO asignatura;
+	
+	@Column(name = "alumno_nombre", length = 100, nullable = true)
+	String alumno_nombre;
+	@Column(name = "asignatura_nombre", length = 100, nullable = true)
+	String asignatura_nombre;
+	
+	/*************************************** CONSTRUCTORES *******************************************/
+	
+	// constructor lleno
+	public RelAlumAsigDTO(int relAlumAsig_id, AlumnoDTO alumno, String alumno_nombre, AsignaturaDTO asignatura, String asignatura_nombre) {
+        super();
+        this.relAlumAsig_id = relAlumAsig_id;
+        this.alumno = alumno;
+        this.alumno_nombre = alumno_nombre;
+        this.asignatura = asignatura;
+        this.asignatura_nombre = asignatura_nombre;
+    }
+
+	// constructor vacío
+	public RelAlumAsigDTO() {
+		super();
+	}
+
+	
+	/****************************************** GETTERS Y SETTERS ***************************************/
+	public int getRelAlumAsig_id() {
+        return relAlumAsig_id;
+    }
+
+    public void setRelAlumAsig_id(int relAlumAsig_id) {
+        this.relAlumAsig_id = relAlumAsig_id;
+    }
+
+    public AlumnoDTO getAlumno() {
+        return alumno;
+    }
+
+    public void setAlumno(AlumnoDTO alumno) {
+        this.alumno = alumno;
+    }
+
+    public String getAlumno_nombre() {
+        return alumno_nombre;
+    }
+
+    public void setAlumno_nombre(String alumno_nombre) {
+        this.alumno_nombre = alumno_nombre;
+    }
+
+    public AsignaturaDTO getAsignatura() {
+        return asignatura;
+    }
+
+    public void setAsignatura(AsignaturaDTO asignatura) {
+        this.asignatura = asignatura;
+    }
+
+    public String getAsignatura_nombre() {
+        return asignatura_nombre;
+    }
+
+    public void setAsignatura_nombre(String asignatura_nombre) {
+        this.asignatura_nombre = asignatura_nombre;
+    }
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+    
+	
+	/***************************************** MÉTODOS ***********************************/
+
+
+    /*************************************** ToString ***************************************/
+	@Override
+	public String toString() {
+	    return 
+	    	"\t" + relAlumAsig_id;
+	}
+	
 }
 ```
 
@@ -482,7 +541,7 @@ public class alumno_CRUD {
 	// Create an EntityManagerFactory when you start the application
     private static final EntityManagerFactory ENTITY_MANAGER_ALUMNO = Persistence.createEntityManagerFactory("ALUMNO_PERSISTENCE");
 
-	public static void addAlumno(String nombre, String apellidos, String email) { // he quitado el parámetro de entrada del id porque como es un sequence se debe poner sólo
+    public static void addAlumno(String nombre, String apellidos, String email) { // he quitado el parámetro de entrada del id porque como es un sequence se debe poner sólo
         // The EntityManager class allows operations such as create, read, update, delete
         EntityManager em = ENTITY_MANAGER_ALUMNO.createEntityManager();
         // Used to issue transactions on the EntityManager
@@ -495,11 +554,11 @@ public class alumno_CRUD {
  
             // Create and set values for new customer
             AlumnoDTO alumno = new AlumnoDTO();
-            // alumno.setAlumno_id(id);
+            // asignatura.setAsignatura_id(id);
             alumno.setAlumno_nombre(nombre);
             alumno.setAlumno_apellidos(apellidos);
             alumno.setAlumno_email(email);
- 
+            
             // Save the customer object
             em.persist(alumno);
             et.commit();
@@ -559,6 +618,7 @@ public class alumno_CRUD {
     		// Get matching customer object and output
     		alumno = tq.getSingleResult();
     		//System.out.println(alumno.getAlumno_id() + " " + alumno.getAlumno_nombre() + " " + alumno.getAlumno_apellidos() + " " + alumno.getAlumno_email());
+    		return alumno;
     	}
     	catch(NoResultException ex) {
     		ex.printStackTrace();
@@ -755,6 +815,7 @@ public class asignatura_CRUD {
     		// Get matching customer object and output
     		asignatura = tq.getSingleResult();
     		//System.out.println(asignatura.getAsignatura_id() + " " + asignatura.getAsignatura_nombre());
+    		return asignatura;
     	}
     	catch(NoResultException ex) {
     		ex.printStackTrace();
@@ -855,6 +916,237 @@ public class asignatura_CRUD {
 }
 ```
 
+## 3.3. *Models.CRUD --> relAlumAsig_CRUD*
+
+```java
+package Models.CRUD;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+
+import Models.DTOs.AlumnoDTO;
+import Models.DTOs.AsignaturaDTO;
+import Models.DTOs.RelAlumAsigDTO;
+
+public class relAlumAsig_CRUD { ////////////// clase en revisión ////////////////
+	
+	// Create an EntityManagerFactory when you start the application
+    private static final EntityManagerFactory ENTITY_MANAGER_REL_ALUM_ASIG = Persistence.createEntityManagerFactory("REL_ALUM_ASIG_PERSISTENCE");
+
+	public static void addRelAlumAsig(AlumnoDTO alumno, AsignaturaDTO asignatura) { // he quitado el parámetro de entrada del id porque como es un sequence se debe poner sólo
+        // The EntityManager class allows operations such as create, read, update, delete
+        EntityManager em = ENTITY_MANAGER_REL_ALUM_ASIG.createEntityManager();
+        // Used to issue transactions on the EntityManager
+        EntityTransaction et = null;
+ 
+        try {
+            // Get transaction and start
+            et = em.getTransaction();
+            et.begin();
+ 
+            // Create and set values for new customer
+            RelAlumAsigDTO relAlumAsig = new RelAlumAsigDTO();
+            relAlumAsig.setAlumno(alumno);
+            relAlumAsig.setAlumno_nombre(alumno.getAlumno_nombre());
+            relAlumAsig.setAsignatura(asignatura);
+            relAlumAsig.setAsignatura_nombre(asignatura.getAsignatura_nombre());
+            
+            // Save the customer object
+            em.persist(relAlumAsig);
+            et.commit();
+            
+        } catch (Exception ex) {
+            // If there is an exception rollback changes
+            if (et != null) {
+                et.rollback();
+            }
+            
+            ex.printStackTrace();
+        
+        } finally {
+            // Close EntityManager
+            em.close();
+        }
+    }
+	
+	public static void getRelAlumAsig(int relAlumAsig_id) {
+    	EntityManager em = ENTITY_MANAGER_REL_ALUM_ASIG.createEntityManager();
+    	
+    	// the lowercase a refers to the object
+    	// :relAlumAsigID is a parameterized query thats value is set below
+    	String query = "SELECT r FROM RelAlumAsigDTO r WHERE r.id = :relAlumAsigID";
+    	
+    	// Issue the query and get a matching Customer
+    	TypedQuery<RelAlumAsigDTO> tq = em.createQuery(query, RelAlumAsigDTO.class);
+    	tq.setParameter("relAlumAsigID", relAlumAsig_id);
+    	
+    	RelAlumAsigDTO relAlumAsig = null;
+    	try {
+    		// Get matching customer object and output
+    		relAlumAsig = tq.getSingleResult();
+            System.out.println(relAlumAsig.getRelAlumAsig_id() + " " + relAlumAsig.getAlumno().getAlumno_id() + " " + relAlumAsig.getAlumno().getAlumno_nombre() + " " + relAlumAsig.getAsignatura().getAsignatura_id() + " " + relAlumAsig.getAsignatura().getAsignatura_nombre());
+    	}
+    	catch(NoResultException ex) {
+    		ex.printStackTrace();
+    	}
+    	finally {
+    		em.close();
+    	}
+    }
+	
+	public static RelAlumAsigDTO seleccionarRelAlumAsig(int relAlumAsig_id) {
+    	EntityManager em = ENTITY_MANAGER_REL_ALUM_ASIG.createEntityManager();
+    	
+    	// the lowercase a refers to the object
+    	// :relAlumAsigID is a parameterized query thats value is set below
+    	String query = "SELECT r FROM RelAlumAsigDTO r WHERE r.id = :relAlumAsigID";
+    	
+    	// Issue the query and get a matching Customer
+    	TypedQuery<RelAlumAsigDTO> tq = em.createQuery(query, RelAlumAsigDTO.class);
+    	tq.setParameter("relAlumAsigID", relAlumAsig_id);
+    	
+    	RelAlumAsigDTO relAlumAsig = null;
+    	try {
+    		// Get matching customer object and output
+    		relAlumAsig = tq.getSingleResult();
+    	}
+    	catch(NoResultException ex) {
+    		ex.printStackTrace();
+    	}
+    	finally {
+    		em.close();
+    	}
+		return relAlumAsig;
+    }
+    
+    public static void getListaRelAlumAsig() {
+    	EntityManager em = ENTITY_MANAGER_REL_ALUM_ASIG.createEntityManager();
+    	
+    	// the lowercase c refers to the object
+    	// :relAlumAsigID is a parameterized query thats value is set below
+    	String strQuery = "SELECT a FROM RelAlumAsigDTO a WHERE a.id IS NOT NULL";
+    	
+    	// Issue the query and get a matching Customer
+    	TypedQuery<RelAlumAsigDTO> tq = em.createQuery(strQuery, RelAlumAsigDTO.class);
+    	List<RelAlumAsigDTO> listaRelAlumAsigs;
+    	try {
+    		// Get matching customer object and output
+    		listaRelAlumAsigs = tq.getResultList();
+    		
+    		for(RelAlumAsigDTO relAlumAsig : listaRelAlumAsigs) {
+    			System.out.println(relAlumAsig.getRelAlumAsig_id() + " " + relAlumAsig.getAlumno().getAlumno_id() + " " + relAlumAsig.getAlumno().getAlumno_nombre() + " " + relAlumAsig.getAsignatura().getAsignatura_id() + " " + relAlumAsig.getAsignatura().getAsignatura_nombre());
+            }
+    	}
+    	catch(NoResultException ex) {
+    		ex.printStackTrace();
+    	}
+    	finally {
+    		em.close();
+    	}
+    }
+    
+    public static void changeRelAlumAsig_alumno_nombre(int relAlumAsig_id, String alumno_nombre) {
+        EntityManager em = ENTITY_MANAGER_REL_ALUM_ASIG.createEntityManager();
+        EntityTransaction et = null;
+        
+    	RelAlumAsigDTO relAlumAsig = null;
+ 
+        try {
+            // Get transaction and start
+            et = em.getTransaction();
+            et.begin();
+ 
+            // Find customer and make changes
+            relAlumAsig = em.find(RelAlumAsigDTO.class, relAlumAsig_id);
+            relAlumAsig.setAlumno_nombre(alumno_nombre);
+ 
+            // Save the customer object
+            em.persist(relAlumAsig);
+            et.commit();
+            
+        } catch (Exception ex) {
+            // If there is an exception rollback changes
+            if (et != null) {
+                et.rollback();
+            }
+            
+            ex.printStackTrace();
+        
+        } finally {
+            // Close EntityManager
+            em.close();
+        }
+    }
+    
+    public static void changeRelAlumAsig_asignatura_nombre(int relAlumAsig_id, String asignatura_nombre) {
+        EntityManager em = ENTITY_MANAGER_REL_ALUM_ASIG.createEntityManager();
+        EntityTransaction et = null;
+        
+    	RelAlumAsigDTO relAlumAsig = null;
+ 
+        try {
+            // Get transaction and start
+            et = em.getTransaction();
+            et.begin();
+ 
+            // Find customer and make changes
+            relAlumAsig = em.find(RelAlumAsigDTO.class, relAlumAsig_id);
+            relAlumAsig.setAsignatura_nombre(asignatura_nombre);
+ 
+            // Save the customer object
+            em.persist(relAlumAsig);
+            et.commit();
+            
+        } catch (Exception ex) {
+            // If there is an exception rollback changes
+            if (et != null) {
+                et.rollback();
+            }
+            
+            ex.printStackTrace();
+        
+        } finally {
+            // Close EntityManager
+            em.close();
+        }
+    }
+    
+    public static void deleteRelAlumAsig(int relAlumAsig_id) {
+    	EntityManager em = ENTITY_MANAGER_REL_ALUM_ASIG.createEntityManager();
+        EntityTransaction et = null;
+        RelAlumAsigDTO relAlumAsig = null;
+ 
+        try {
+            et = em.getTransaction();
+            et.begin();
+            
+            relAlumAsig = em.find(RelAlumAsigDTO.class, relAlumAsig_id);
+            em.remove(relAlumAsig);
+            et.commit();
+        
+        } catch (Exception ex) {
+            // If there is an exception rollback changes
+            if (et != null) {
+                et.rollback();
+            }
+            
+            ex.printStackTrace();
+        
+        } finally {
+            // Close EntityManager
+            em.close();
+        }
+    }
+    
+}
+```
+
 # 4. *src/main/java --> Main --> Main.java*
 
 ```java
@@ -862,6 +1154,7 @@ package Main;
 
 import java.util.Scanner;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -869,6 +1162,9 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 import Models.CRUD.alumno_CRUD;
 import Models.CRUD.asignatura_CRUD;
+import Models.DTOs.AlumnoDTO;
+import Models.DTOs.AsignaturaDTO;
+import Models.DTOs.RelAlumAsigDTO;
 
 public class Main {
 	
@@ -930,10 +1226,39 @@ public class Main {
 		
 		System.out.println("\n");
 		
-		/**************************** Recogemos el alumno1 y la asignatura2 y creamos un nuevo objeto **************/
+		/********* vamos a crear un tercer alumno y una tercera asignatura y creamos un nuevo objeto relacional con ellos **************/
 
+		Session session = factory.openSession();
 		
+		System.out.print("\nIntroduzca el nombre del alumno 3:\t");
+        nombre = sc.nextLine();
+        System.out.print("\nIntroduzca los apellidos del alumno 3:\t");
+        apellidos = sc.nextLine();
+        System.out.print("\nIntroduzca el email del alumno 3:\t");
+        email = sc.nextLine();
 		
+		AlumnoDTO alumno = new AlumnoDTO();
+		alumno.setAlumno_nombre(nombre);
+        alumno.setAlumno_apellidos(nombre);
+        alumno.setAlumno_email(email);
+		
+        System.out.print("\nIntroduzca el nombre de la asignatura 3:\t");
+        nombre = sc.nextLine();
+        
+		AsignaturaDTO asignatura = new AsignaturaDTO();
+		asignatura.setAsignatura_nombre(nombre);
+		
+		RelAlumAsigDTO relAlumAsig = new RelAlumAsigDTO();
+		relAlumAsig.setAlumno(alumno);
+		relAlumAsig.setAsignatura(asignatura);
+		relAlumAsig.setAlumno_nombre(alumno.getAlumno_nombre());
+		relAlumAsig.setAsignatura_nombre(asignatura.getAsignatura_nombre());
+		
+		asignatura.addRelAlumAsig(relAlumAsig);
+		
+		session.save(asignatura);
+		session.close();
+
 		/***********************************************************************************************************************/
 		factory.close(); // hay que cerrar el factory con el que se autocrean las tablas en la BBDD
 	}
@@ -943,4 +1268,33 @@ public class Main {
 
 # PROBLEMAS y ERRORES
 
-No me sale crear la relación entre ambas clases, es decir, no logro crear un objeto relación (relAlumAsig) a través de la persistencia de las clases modelo.
+Para crear la tabla y un objeto relacional he visto el siguiente video:
+
+https://www.youtube.com/watch?v=_vhskxEihz4&ab_channel=CodeJava
+
+
+# Solución de primeros errores y dependencias
+
+![](./img/2.png)
+
+![](./img/3.png)
+
+![](./img/4.png)
+
+![](./img/5.png)
+
+![](./img/6.png)
+
+![](./img/7.png)
+
+![](./img/8.png)
+
+![](./img/9.png)
+
+![](./img/10.png)
+
+![](./img/11.png)
+
+![](./img/12.png)
+
+![](./img/13.png)
